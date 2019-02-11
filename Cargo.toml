@@ -2,5 +2,8 @@
 name = "game_of_life"
 version = "0.1.0"
 authors = ["Michael Mezzina <michaelmez39@gmail.com>"]
+edition = "2018"
 
 [dependencies]
+termion = "1.5.1"
+rand = "0.5.5"
