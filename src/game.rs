@@ -39,7 +39,7 @@ impl Game {
             write!(stdout, "{:^count$}", self.board, count=(termion::terminal_size().unwrap().0 as usize)).unwrap();
             thread::sleep(Duration::from_millis(1000 / self.gps));
             self.board = self.board.next().unwrap();
-            write!(stdout, "{}", termion::clear::All);
+            //write!(stdout, "{}", termion::clear::All);
         }
         self.state = GameState::Ended;
         stdout.flush().unwrap();

@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::fmt::{Display, Debug};
 use std::iter::Iterator;
 use std;
 
@@ -11,6 +11,30 @@ pub struct Board {
     contents: Vec<Vec<bool>>
 }
 
+impl Debug for Board {
+    fn fmt(&self ,format: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
+            let mut buffer: String = String::with_capacity(self.height * self.width + self.height);
+            let board = &self.contents;
+            for row in 1..self.height {
+                for column in 1..self.width {
+                    if board[row][column] {
+                        buffer.push_str(&format!("{}", color::Bg(color::Red)));
+                        buffer.push_str(&self.neighbors(row, column).to_string());
+                    
+                    } else {
+                        buffer.push_str(&format!("{}", color::Bg(color::Reset)));
+                        buffer.push_str(&self.neighbors(row, column).to_string());
+                    
+                    }
+                    
+                }buffer.push_str(&format!("{}", color::Bg(color::Reset)));
+                buffer.push_str("\n\r");
+            }
+            buffer.push_str("\n\r");
+            format.write_str(&buffer)
+        }
+}
+
 impl Display for Board {
     fn fmt(&self ,format: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
         let mut buffer: String = String::with_capacity(self.height * self.width + self.height);
@@ -18,12 +42,10 @@ impl Display for Board {
         for row in 1..self.height {
             for column in 1..self.width {
                 if board[row][column] {
-                    buffer.push_str(&format!("{}", color::Bg(color::Red)));
-                    buffer.push_str(" ");
+                    buffer.push_str("■");
                    
                 } else {
-                     buffer.push_str(&format!("{}", color::Bg(color::Reset)));
-                      buffer.push_str(" ");
+                     buffer.push_str("□");
                    
                 }
                 
@@ -44,7 +66,7 @@ impl Iterator for Board{
             for column in 1..self.width {
                 let neighbors = self.neighbors(row, column);
                 match neighbors {
-                    0 | 1 => future[column][row] = false,
+                    0 | 1 => future[row][column] = false,
                     2 => future[row][column] = self.contents[row][column],
                     3 => future[row][column] = true,
                     _ => future[row][column] = false,
