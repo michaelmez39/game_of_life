@@ -2,6 +2,7 @@ use crate::board::Board;
 
 use termion::raw::IntoRawMode;
 use termion::clear;
+use termion::screen;
 use std::thread;
 use std::time::Duration;
 use std::io::{Write, stdout};
@@ -30,18 +31,24 @@ impl Game {
         }
     }
 
-    pub fn start(&mut self) {
-        let mut stdout = stdout().into_raw_mode().unwrap();
-        
+    pub fn start_terminal(&mut self) -> Result<(), std::io::Error>{
+        let mut screen = screen::AlternateScreen::from(stdout().into_raw_mode()?);
+        write!(screen, "{}", termion::cursor::Hide)?;
         self.state = GameState::Running;
-        for _ in 0..self.generations {
-            //write!(stdout, "{}", clear::All).unwrap();
-            write!(stdout, "{:^count$}", self.board, count=(termion::terminal_size().unwrap().0 as usize)).unwrap();
+        for generation in 0..self.generations {
+            write!(screen, "{}\r\n", clear::All)?;
+            write!(screen, "{}", self.board)?;
+            termion::cursor::Goto(self.board.height as u16, 1);
+            write!(screen, "Generation: {}\r\n\r\n", generation)?;
             thread::sleep(Duration::from_millis(1000 / self.gps));
             self.board = self.board.next().unwrap();
-            //write!(stdout, "{}", termion::clear::All);
+            screen.flush().unwrap();
         }
         self.state = GameState::Ended;
-        stdout.flush().unwrap();
+        screen.flush().unwrap();
+        write!(screen, "{}", termion::clear::All)?;
+        write!(screen, "{}", termion::cursor::Show)?;
+        write!(stdout(), "{}", clear::All)?;
+        Ok(())
     }
 }

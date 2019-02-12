@@ -7,7 +7,7 @@ use rand::prelude::*;
 
 pub struct Board {
     width: usize,
-    height: usize,
+    pub height: usize,
     contents: Vec<Vec<bool>>
 }
 
@@ -42,14 +42,15 @@ impl Display for Board {
         for row in 1..self.height {
             for column in 1..self.width {
                 if board[row][column] {
-                    buffer.push_str("■");
+                    buffer.push_str("*"); //■
                    
                 } else {
-                     buffer.push_str("□");
+                     buffer.push_str(" ");
                    
                 }
                 
-            }buffer.push_str(&format!("{}", color::Bg(color::Reset)));
+            }
+            buffer.push_str(&format!("{}", color::Bg(color::Reset)));
             buffer.push_str("\n\r");
         }
         buffer.push_str("\n\r");

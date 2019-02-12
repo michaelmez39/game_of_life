@@ -7,18 +7,8 @@ use self::game::Game;
 
 
 fn main() {
-    let mut board = Board::new(20, 20);
-    board.flip_point(11, 11);
-    board.flip_point(10, 11);
-    board.flip_point(10, 12);
-    board.flip_point(10, 13);
-    
-    // board.flip_point(18, 10);
-    // board.flip_point(13, 13);
-    // board.flip_point(16, 10);
-    //board.fill_rand();
-    let mut quick_game = Game::new(7, board, 2);
-    quick_game.start();
-
+    let mut board = Board::new(100, 100);
+    board.fill_rand();
+    let mut quick_game = Game::new(100, board, 10);
+    quick_game.start_terminal().expect("error writing to the terminal. Make sure to use a terminal that supports unicode...");
 }
-
